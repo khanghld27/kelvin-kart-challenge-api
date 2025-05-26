@@ -28,5 +28,9 @@ go.work.sum
 .idea/
 .vscode/
 
+# OS
+.DS_Store
+
 # tmp
 tmp/
+.playground

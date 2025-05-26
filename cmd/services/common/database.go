@@ -17,11 +17,10 @@ func InitDBConnection(config configs.PostgreSQL) gormer.DBAdapter {
 		logMode = logger.Default.LogMode(logger.Info)
 	}
 
-	db := gormer.NewDB()
-
-	if err := db.Connect(config.Conn(), gorm.Config{
+	db, err := gormer.Connect(config.Conn(), gorm.Config{
 		Logger: logMode,
-	}); err != nil {
+	})
+	if err != nil {
 		logrus.Fatal("Creating connection to DB got error:", err)
 	}
 

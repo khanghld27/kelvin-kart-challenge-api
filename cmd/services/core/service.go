@@ -54,8 +54,6 @@ func newService() *application {
 
 	logger.Init(s.cfg.LogLevel == string(logger.DebugLevel))
 	logger.SetLevel(s.cfg.LogLevel)
-
-	logger.Error("Some error happens")
 	return s
 }
 

@@ -1,3 +1,6 @@
+gen:
+	@go generate -v ./...
+
 env:
 	@export $(grep -v '^#' ./.env | xargs)
 mod:

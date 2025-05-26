@@ -4,7 +4,8 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/configs"
-	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/restful/middleware"
+	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/restful/middleware"
+	"github.com/khanghld27/kelvin-kart-challenge-api/app/registry"
 	"github.com/khanghld27/kelvin-kart-challenge-api/pkg/logger"
 	"net/http"
 	"time"
@@ -28,9 +29,22 @@ func Restful(config *configs.Config) *gin.Engine {
 	}
 
 	router.Use(middleware.AddTimeout)
-	router.GET("/", root)
-	router.GET("/api/healthz", healthz)
 	router.Use(middleware.JSONWriterMiddleware)
+	router.GET("/", root)
+
+	api := router.Group("/api")
+
+	health := api.Group("/health")
+	health.GET("/healthz", healthz)
+
+	productHandler := registry.ProductHandler()
+	txnMw := registry.TransactionMiddleware()
+
+	productRoute := api.Group("/product")
+	productRoute.Use(txnMw.StartRequest)
+	productRoute.Use(txnMw.EndRequest)
+	productRoute.GET("/", productHandler.GetAllProducts)
+	productRoute.GET("/:id", productHandler.GetProductByID)
 
 	return router
 }

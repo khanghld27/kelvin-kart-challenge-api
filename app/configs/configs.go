@@ -56,7 +56,7 @@ type ServerCfg struct {
 	Timeout time.Duration `envconfig:"TIMEOUT" default:"3s"`
 }
 
-// Config  is APP config information
+// Config is APP config information
 type Config struct {
 	Env              string `envconfig:"ENV" default:"local"`
 	HTTPServer       ServerCfg

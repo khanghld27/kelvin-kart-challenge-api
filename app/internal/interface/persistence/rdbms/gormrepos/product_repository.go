@@ -25,10 +25,14 @@ func (r *ProductRepository) GetByID(ctx context.Context, id int) (*models.Produc
 }
 
 func (r *ProductRepository) GetProducts(ctx context.Context) ([]*models.Product, error) {
-	products := []*models.Product{}
+	var products []*models.Product
 	err := r.DB(ctx).Find(&products).Preload("Images").Error
 	if err != nil {
 		return nil, err
 	}
 	return products, nil
+}
+
+func (r *ProductRepository) CreateProduct(ctx context.Context, product *models.Product) error {
+	return r.DB(ctx).Create(product).Error
 }

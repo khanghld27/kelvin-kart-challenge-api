@@ -8,11 +8,11 @@ import (
 )
 
 var (
-	once sync.Once
+	once            sync.Once
+	adapterInstance *adapter
 )
 
 type DBAdapter interface {
-	Connect(connStr string, config gorm.Config) error
 	Close()
 	Begin() DBAdapter
 	RollbackUselessCommitted()
@@ -25,24 +25,37 @@ type adapter struct {
 	isCommitted bool
 }
 
-func NewDB() DBAdapter {
-	return &adapter{}
-}
-
-func (db *adapter) Connect(connStr string, config gorm.Config) error {
+func Connect(connStr string, config gorm.Config) (DBAdapter, error) {
 	var (
 		err    error
 		gormer *gorm.DB
 	)
+
 	once.Do(func() {
 		gormer, err = gorm.Open(postgres.Open(connStr), &config)
 		if err != nil {
 			return
 		}
+
+		if adapterInstance == nil {
+			adapterInstance = &adapter{
+				gormer:      gormer,
+				isCommitted: false,
+			}
+		} else {
+			adapterInstance.gormer = gormer
+		}
 	})
 
-	db.gormer = gormer
-	return nil
+	if err != nil {
+		return nil, err
+	}
+
+	return adapterInstance, nil
+}
+
+func GetDB() DBAdapter {
+	return adapterInstance
 }
 
 func (db *adapter) Close() {

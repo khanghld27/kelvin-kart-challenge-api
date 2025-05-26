@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/appctx"
-	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/restful/presenter"
+	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/restful/presenter"
 	"net/http"
 )
 

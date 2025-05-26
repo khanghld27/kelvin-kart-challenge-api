@@ -3,6 +3,7 @@ package interactor
 import (
 	"context"
 
+	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/domain/models"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/domain/repositories"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/usecases/dto"
 )
@@ -38,4 +39,8 @@ func (p *ProductUseCase) GetProducts(ctx context.Context) ([]dto.ProductResponse
 	}
 
 	return productResponses, nil
+}
+
+func (p *ProductUseCase) CreateProduct(ctx context.Context, product *models.Product) error {
+	return p.productRepo.CreateProduct(ctx, product)
 }
