@@ -36,3 +36,10 @@ func (r *ProductRepository) GetProducts(ctx context.Context) ([]*models.Product,
 func (r *ProductRepository) CreateProduct(ctx context.Context, product *models.Product) error {
 	return r.DB(ctx).Create(product).Error
 }
+
+func (r *ProductRepository) BulkCreateProducts(ctx context.Context, products []*models.Product) error {
+	if len(products) == 0 {
+		return nil // No products to create
+	}
+	return r.DB(ctx).Create(products).Error
+}

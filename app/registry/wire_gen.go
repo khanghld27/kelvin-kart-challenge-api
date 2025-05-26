@@ -10,9 +10,19 @@ import (
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/persistence/rdbms/gormrepos"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/restful/handlers"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/restful/middleware"
+	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/scrapers/gateway"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/usecases/interactor"
 	"github.com/khanghld27/kelvin-kart-challenge-api/pkg/gormer"
 )
+
+// Injectors from scrapers_set.go:
+
+func InitializeProductImporter(apiBaseURL string) *interactor.ProductImporterUseCase {
+	httpExternalProductAPI := gateway.NewHTTPExternalProductAPI(apiBaseURL)
+	productRepository := gormrepos.NewProductRepository()
+	productImporterUseCase := interactor.NewProductImporterUseCase(httpExternalProductAPI, productRepository)
+	return productImporterUseCase
+}
 
 // Injectors from wire.go:
 

@@ -22,6 +22,9 @@ migratedown:
 run:
 	@go run ./cmd/services/core/...
 
+scrapers:
+	@go run ./cmd/services/scrapers/...
+
 docker-up:
 	@docker-compose -f ./deployments/local/docker-compose.yml build --no-cache
 	@docker-compose -f ./deployments/local/docker-compose.yml up -d

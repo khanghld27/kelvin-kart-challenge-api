@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/interface/restful/presenter"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/usecases"
+	"github.com/khanghld27/kelvin-kart-challenge-api/pkg/copier"
 	"net/http"
 	"strconv"
 )
@@ -21,38 +21,48 @@ func NewProductHandler(productUseCase usecases.ProductUseCase) ProductHandler {
 }
 
 func (h *ProductHandler) GetProductByID(ctx *gin.Context) {
-	productID := ctx.Param("id")
-	// parse productID to int or appropriate type if needed
-	productIDInt, err := strconv.Atoi(productID)
+	var (
+		productId int
+		res       presenter.ProductInformation
+		err       error
+	)
+
+	id := ctx.Param("id")
+	// parse id to int
+	productId, err = strconv.Atoi(id)
 	if err != nil {
 		h.SetError(ctx, err)
 		return
 	}
 
-	product, err := h.productUseCase.GetProductByID(ctx.Request.Context(), productIDInt)
+	resDto, err := h.productUseCase.GetProductByID(ctx.Request.Context(), productId)
 	if err != nil {
 		h.SetError(ctx, err)
 		return
 	}
-	h.SetData(ctx, product)
+
+	copier.MustCopy(&res, &resDto)
+	h.SetData(ctx, res)
 	h.SetMeta(ctx, presenter.MetaResponse{
 		Code: http.StatusOK,
 	})
 }
 
 func (h *ProductHandler) GetAllProducts(ctx *gin.Context) {
-	products, err := h.productUseCase.GetProducts(ctx.Request.Context())
+	var (
+		res []presenter.ProductInformation
+		err error
+	)
+
+	resDto, err := h.productUseCase.GetProducts(ctx.Request.Context())
 	if err != nil {
 		h.SetError(ctx, err)
 		return
 	}
 
-	h.SetData(ctx, products)
+	copier.MustCopy(&res, &resDto)
+	h.SetData(ctx, res)
 	h.SetMeta(ctx, presenter.MetaResponse{
 		Code: http.StatusOK,
 	})
-}
-
-func (h *ProductHandler) CreateProduct(ctx context.Context) {
-	return
 }

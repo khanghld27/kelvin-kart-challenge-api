@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/appctx"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/transaction"
@@ -45,6 +46,34 @@ func (mw *TransactionMiddleware) EndRequest(ctx *gin.Context) {
 	} else {
 		logger.Debugf("commit transaction %p", mw.manager.GetTxn(ctx.Request.Context()))
 		err := mw.manager.TxnCommit(ctx.Request.Context())
+		if err != nil {
+			return
+		}
+	}
+}
+
+func (mw *TransactionMiddleware) StartToolRequest(ctx context.Context) context.Context {
+	newCtx := mw.manager.TxnBegin(ctx)
+	return newCtx
+}
+
+func (mw *TransactionMiddleware) EndToolRequest(ctx context.Context) {
+	err := appctx.GetValue(ctx, appctx.ErrorContextKey)
+	if p := recover(); p != nil {
+		logger.Error("found p and rollback ", p)
+		err := mw.manager.TxnRollback(ctx)
+		if err != nil {
+			return
+		}
+	} else if err != nil {
+		logger.Debugf("found e and rollback %v", err)
+		err := mw.manager.TxnRollback(ctx)
+		if err != nil {
+			return
+		}
+	} else {
+		logger.Debugf("commit transaction %p", mw.manager.GetTxn(ctx))
+		err := mw.manager.TxnCommit(ctx)
 		if err != nil {
 			return
 		}

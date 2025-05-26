@@ -12,3 +12,7 @@ type ProductUseCase interface {
 	GetProducts(ctx context.Context) ([]dto.ProductResponse, error)
 	CreateProduct(ctx context.Context, product *models.Product) error
 }
+
+type ProductImporterUseCase interface {
+	ImportProducts(ctx context.Context) error
+}
