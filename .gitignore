@@ -34,3 +34,4 @@ go.work.sum
 # tmp
 tmp/
 .playground
+/promocodes/*

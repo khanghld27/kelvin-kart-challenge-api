@@ -2,7 +2,6 @@ package gormrepos
 
 import (
 	"context"
-	"fmt"
 	"github.com/khanghld27/kelvin-kart-challenge-api/app/internal/appctx"
 	"github.com/khanghld27/kelvin-kart-challenge-api/pkg/gormer"
 	"github.com/khanghld27/kelvin-kart-challenge-api/pkg/logger"
@@ -36,7 +35,6 @@ func (tds *TxnDataSQL) TxnRollback(ctx context.Context) (err error) {
 
 // TxnCommit commit a transaction
 func (tds *TxnDataSQL) TxnCommit(ctx context.Context) (err error) {
-	fmt.Println("here commit")
 	return tds.GetTxn(ctx).(*gorm.DB).Commit().Error
 }
 

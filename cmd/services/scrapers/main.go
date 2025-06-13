@@ -31,7 +31,6 @@ func main() {
 	txnMiddleware := registry.TransactionMiddleware() // assumes you have this
 
 	ctx = txnMiddleware.StartToolRequest(ctx)
-	fmt.Println(ctx.Value(4))
 
 	apiBaseURL := os.Getenv("EXTERNAL_API_URL")
 	if apiBaseURL == "" {
